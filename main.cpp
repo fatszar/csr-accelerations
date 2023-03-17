@@ -4,6 +4,7 @@
 
 #include "csr_acc.h"
 
+
 enum class service_restriction
 {
   R0 = 0,
@@ -27,7 +28,6 @@ enum class design_load_scenario
   accidental_flooded,
   harbour_or_sheltered
 };
-
 const double _L_RULE = 175.15; //m
 const double _B = 32.2;        //m
 const double _T_SC = 13.3;     //m
@@ -102,7 +102,7 @@ int main()
 
   std::vector<double> xyz;
 
-  ships::rules::csr::accelertations::CSR_ACC acc(_L_RULE, _B, _T_SC, _T_LC, _D, _V, _CB, xyz);
+//  ships::rules::csr::accelertations::CSR_ACC acc(_L_RULE, _B, _T_SC, _T_LC, _D, _V, _CB, xyz);
 
   return 0;
 }
