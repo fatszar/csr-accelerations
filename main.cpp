@@ -1,7 +1,7 @@
 #include<iostream>
 #include "csr.h"
 
-namespace csr = ships::rules::csr::accelerations;
+namespace csr = ships::rules::csr;
 const double _L_RULE = 175.15; //m
 const double _B = 32.2;        //m
 const double _T_SC = 13.3;     //m
@@ -16,6 +16,7 @@ const csr::service_restriction _restriction = csr::service_restriction::R0;
 const csr::design_load_scenario _load_scenario = csr::design_load_scenario::extreme_sea;
 const csr::analysis_type _analysis_type = csr::analysis_type::strength;
 
+
 int main()
 {
   std::cout << "*** Common Structural Rules ***\n";
@@ -23,6 +24,7 @@ int main()
   std::cout << "R = " << csr::rot_centre(_D, _T_LC) << "\n";
   std::cout << "fT = " << csr::fT(_T_LC, _T_SC) << "\n";
   std::cout << "T_theta = " << csr::roll_period(_Kr, _GM) << "\n";
+  std::cout << "Theta = " << csr::roll_angle(_B, _Kr, _GM, _BilgeKeel, _analysis_type, _load_scenario) << "\n";
 
   return 0;
 }

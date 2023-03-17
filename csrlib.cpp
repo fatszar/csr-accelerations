@@ -1,7 +1,7 @@
 #include "csr.h"
-namespace ships::rules::csr
+namespace ships::rules::csr::accelerations
 {
-  //Acceleration paramete
+  //Acceleration parameter
   double a0(double L, double CB){
     return (1.58-0.47*CB)*((2.4/sqrt(L))+(34/L)-(600/(L*L)));
   };
@@ -26,8 +26,6 @@ namespace ships::rules::csr
   double roll_angle(double B, double k_r, double GM, bool has_bilge_keel, analysis_type type, design_load_scenario load_scenario){
     double f_BK = 0.0;
     double f_p = 0.0;
-    double f_fa = 0.8; //fatigue factor
-    double f_T = 
 
 
     if (has_bilge_keel) f_BK = 1.0;
@@ -42,7 +40,7 @@ namespace ships::rules::csr
       else f_p = 0.0;
     } 
     else if (type == analysis_type::fatigue){
-      f_p = f_fa * (0.23 - 4);
+      f_p = 0.8 * (0.23 - 4);
     }
 
     double roll_period = (2.3*_PI*k_r)/(sqrt(_grav * GM)); //k_r [s]
