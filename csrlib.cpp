@@ -1,49 +1,55 @@
-#include "csr.h"
-namespace ships::rules::csr::accelerations
-{
-  //Acceleration parameter
-  double a0(double L, double CB){
-    return (1.58-0.47*CB)*((2.4/sqrt(L))+(34/L)-(600/(L*L)));
-  };
+#include "csrlib.h"
 
-  //Vertical coorditnate of the ship rotation centre, in [m]
-  double rot_centre(double D, double T_LC){
-    return std::fmin((D/4)+(T_LC/2),D/2);
-  };
+using namespace SHIP::RULES::CSR;
 
-  //Ratio between draught at a loading condtion and scantling draught, not less then 0.5
-  double fT(double T_LC, double T_SC){
-    return std::fmin(T_LC/T_SC,0.5);
-  };
+CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, double V, 
+                   double CB, double GM, double Kr, bool BilgeKeel, design_load_scenario scenario, 
+                   analysis_type analysis_type, service_restriction restriction, vesel_type vesel){
+    _L_RULE = L_RULE;
+    _B = B;
+    _T_SC = T_SC;
+    _T_LC = T_LC;
+    _D = D;
+    _V = V;
+    _CB = CB;
+    _GM = GM;
+    _Kr = Kr;
+    _BilgeKeel = BilgeKeel;
+    _restriction = restriction;
+    _analysis_type = analysis_type;
+    _load_scenario = scenario;
+    _vesel_type = vesel;
 
-  //Ship motions
-  //Roll period, T_theta, [sec]
-  double roll_period(double k_r, double GM){
-      return (2.3*_PI*k_r)/(sqrt(_grav * GM));
-  }
+    _fT =  std::fmin(_T_LC/_T_SC,0.5);
+    _a0 =  (1.58-0.47*_CB)*((2.4/sqrt(_L_RULE))+(34/_L_RULE)-(600/(_L_RULE*_L_RULE)));
+    _RotCentre = std::fmin((_D/4)+(_T_LC/2),_D/2);
+    _rollPeriod =  (2.3*_PI*_Kr)/(sqrt(_grav * _GM));
 
-  //Roll angle, theta, [deg]
-  double roll_angle(double B, double k_r, double GM, bool has_bilge_keel, analysis_type type, design_load_scenario load_scenario){
-    double f_BK = 0.0;
-    double f_p = 0.0;
+    if (_BilgeKeel) _f_BK = 1.0;
+    else _f_BK = 1.2;
 
+    if (_analysis_type == analysis_type::strength){
+        if (_load_scenario == design_load_scenario::extreme_sea) _f_p = 1.0;
+        else if (_load_scenario == design_load_scenario::ballast_water_exchange) _f_p = 0.8;
+        else if (_load_scenario == design_load_scenario::accidental_flooded) _f_p = 0.8;
+        else if (_load_scenario == design_load_scenario::harbour_or_sheltered) _f_p = 0.4;
+        else _f_p = 0.0;
+    }
+    else if (_analysis_type == analysis_type::fatigue){
+      _f_p = 0.8 * (0.23 - 4);
+    }
+    _rollAngle =   9000*(1.25 - 0.025*_rollPeriod)*_f_p*_f_BK/((_B+75)*_PI);
+}
 
-    if (has_bilge_keel) f_BK = 1.0;
-    else f_BK = 1.2;
-
-
-    if (type == analysis_type::strength){
-      if (load_scenario == design_load_scenario::extreme_sea) f_p = 1.0;
-      else if (load_scenario == design_load_scenario::ballast_water_exchange) f_p = 0.8;
-      else if (load_scenario == design_load_scenario::accidental_flooded) f_p = 0.8;
-      else if (load_scenario == design_load_scenario::harbour_or_sheltered) f_p = 0.4;
-      else f_p = 0.0;
-    } 
-    else if (type == analysis_type::fatigue){
-      f_p = 0.8 * (0.23 - 4);
+    CSR_SHIP::~CSR_SHIP()
+    {
     }
 
-    double roll_period = (2.3*_PI*k_r)/(sqrt(_grav * GM)); //k_r [s]
-    return  9000*(1.25 - 0.025*roll_period)*f_p*f_BK/((B+75)*_PI);
-  };
-} // namespace ships::rules::csr:accelerations
+    void CSR_SHIP::print(){
+        std::cout <<"Data from  class\n";
+        std::cout << "a0 = " << _a0 << "\n";
+        std::cout << "R = " << _RotCentre << "\n";
+        std::cout << "fT = " << _fT << "\n";
+        std::cout << "T_theta = " << _rollPeriod << "\n";
+        std::cout << "Theta = " << _rollAngle << "\n";
+    }

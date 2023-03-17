@@ -6,4 +6,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(csrlib VERSION 1.0)
 
-add_executable(csrlib main.cpp csr.cpp)
+add_executable(csrlib main.cpp csrlib.cpp)

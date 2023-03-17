@@ -1,19 +1,15 @@
-#pragma once
+#ifndef CSRLIB_H
+#define CSRLIB_H
+
 #include <cmath>
 #include <vector>
+#include <iostream>
 
-namespace ships::rules::csr
+namespace SHIP::RULES::CSR
 {
   class CSR_SHIP
   {
   public:
-    CSR_SHIP();
-    CSR_SHIP(CSR_SHIP &&) = default;
-    CSR_SHIP(const CSR_SHIP &) = default;
-    CSR_SHIP &operator=(CSR_SHIP &&) = default;
-    CSR_SHIP &operator=(const CSR_SHIP &) = default;
-    ~CSR_SHIP();
-
     enum class service_restriction
     {
         R0 = 0,
@@ -37,68 +33,50 @@ namespace ships::rules::csr
         accidental_flooded,
         harbour_or_sheltered
     };
+
+    enum class vesel_type
+    {
+        bulk_carrier,
+        tanker
+    };
+    CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, double V, double CB, double GM, double Kr, bool BilgeKeel, design_load_scenario scenario, analysis_type analysis_type, service_restriction restriction, vesel_type vesel);
+    //CSR_SHIP(CSR_SHIP &&) = default;
+    //CSR_SHIP(const CSR_SHIP &) = default;
+    //CSR_SHIP &operator=(CSR_SHIP &&) = default;
+    //CSR_SHIP &operator=(const CSR_SHIP &) = default;
+    ~CSR_SHIP();
+    void print();
+
   private:
     double _L_RULE;
     double _B;        //m
     double _T_SC;     //m
     double _T_LC;     //m
     double _D;        //m
-    double _V;       //knots
-    double _CB;     //[-]
-    double _GM;      //m
-    double _Kr;      //m
+    double _V;        //knots
+    double _CB;       //[-]
+    double _GM;       //m
+    double _Kr;       //m
     bool _BilgeKeel;
     service_restriction _restriction;
     design_load_scenario _load_scenario;
     analysis_type _analysis_type;
+    vesel_type _vesel_type;
 
+    //calculated values base on  input data
+    double _fT; //ratio between draught at a loading condition and scantling draught
+    double _f_BK; //bilge keel factor
+    double _f_p; //coefficient dependent on analysis type and loading scenario
+    double _a0; //accelreation parameter
+    double _RotCentre; //vertical coordinate, in m, of the ship rotation centre
+    double _rollPeriod; //T_theta [s]
+    double _rollAngle; //Theta, [deg]
+    //constans
     const double _grav = 9.81; //mm/s2
     const double _PI = 3.14159265358979323846;
 
-
-    double a0();
-    double rot_centre();
-    double fT();
-    double roll_period();
     double roll_angle();
   };
 
-
-
-
-  CSR_SHIP::CSR_SHIP()
-  {
-  }
-
-  CSR_SHIP::~CSR_SHIP()
-  {
-  }
-
-
-
-  class CSR_ACC : CSR_SHIP_DATA
-  {
-  public:
-    CSR_ACC();
-    CSR_ACC(CSR_ACC &&) = default;
-    CSR_ACC(const CSR_ACC &) = default;
-    CSR_ACC &operator=(CSR_ACC &&) = default;
-    CSR_ACC &operator=(const CSR_ACC &) = default;
-    ~CSR_ACC();
-
-  private:
-  };
-
-  CSR_ACC::CSR_ACC()
-  {
-  }
-
-  CSR_ACC::~CSR_ACC()
-  {
-  }
-
-
-
-
-  //Acceleration parameter
 } // namespace ships::rules::csr:accelerations
+#endif
