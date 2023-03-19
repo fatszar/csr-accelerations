@@ -62,11 +62,6 @@ int main()
                   parse_design_load_scenario(_scenario), parse_analysis_type(_analysis), 
                   parse_service_restriction(_restriction), parse_vesel_type(_vessel));
    ship.print(); 
-  // std::cout << "a0 = " << csr::a0(_L_RULE, _CB) << "\n";
-  // std::cout << "R = " << csr::rot_centre(_D, _T_LC) << "\n";
-  // std::cout << "fT = " << csr::fT(_T_LC, _T_SC) << "\n";
-  // std::cout << "T_theta = " << csr::roll_period(_Kr, _GM) << "\n";
-  // std::cout << "Theta = " << csr::roll_angle(_B, _Kr, _GM, _BilgeKeel, _analysis_type, _load_scenario) << "\n";
 
   return 0;
 }

@@ -58,24 +58,37 @@ namespace SHIP::RULES::CSR
     double _GM;       //m
     double _Kr;       //m
     bool _BilgeKeel;
-    service_restriction _restriction;
+    service_restriction _restriction;   
     design_load_scenario _load_scenario;
     analysis_type _analysis_type;
     vesel_type _vesel_type;
 
     //calculated values base on  input data
     double _fT; //ratio between draught at a loading condition and scantling draught
-    double _f_BK; //bilge keel factor
-    double _f_p; //coefficient dependent on analysis type and loading scenario
+    double _f_ps; //coefficient for strength assessment depandant  on design load scenario
+    double _f_fa; // fatigue coefficient , constant = 0.9
     double _a0; //accelreation parameter
     double _RotCentre; //vertical coordinate, in m, of the ship rotation centre
     double _rollPeriod; //T_theta [s]
     double _rollAngle; //Theta, [deg]
+    double _pitchPeriod; //T_phi [s]
+    double _pitchAngle; // phi [deg]
+    double _acc_surge; // longitudinal acceleration due to surge, m/s2
+    double _acc_sway; // longitudinal acceleration due to surge, m/s2
+    double _acc_heave; // longitudinal acceleration due to surge, m/s2
+    double _acc_roll; //roll acceleration in rad/s2 
+    double _acc_pitch; //pitch accemeration in rad/s2
     //constans
     const double _grav = 9.81; //mm/s2
     const double _PI = 3.14159265358979323846;
 
-    double roll_angle();
+    void roll_motion();
+    void pitch_motion();
+    void surge_acceleration();
+    void sway_acceleration();
+    void heave_acceleration();
+    void roll_acceleration();
+    void pitch_acceleration();
   };
 
 } // namespace ships::rules::csr:accelerations
