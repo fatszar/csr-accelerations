@@ -34,6 +34,11 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
 
     roll_motion();  
     pitch_motion();
+    surge_acceleration();
+    sway_acceleration();
+    heave_acceleration();
+    roll_acceleration();
+    pitch_acceleration();
 
 }
 
@@ -82,16 +87,66 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
        _acc_surge = 0.2 * f_p * _a0 * _grav; 
     }
     void CSR_SHIP::sway_acceleration(){
-        
+        double f_p = 0.0;
+
+        if (_analysis_type == analysis_type::strength){
+            f_p = _f_ps;
+        }
+        else if (_analysis_type == analysis_type::fatigue){
+            f_p = _f_fa * (0.24 - (6 + 2*_fT)*(_B* 0.0001));
+        }
+        _acc_sway = 0.3 * f_p * _a0 * _grav;
     }
     void CSR_SHIP::heave_acceleration(){
-        
+        double f_p = 0.0;
+
+        if (_analysis_type == analysis_type::strength){
+            f_p = _f_ps;
+        }
+        else if (_analysis_type == analysis_type::fatigue){
+            f_p = _f_fa * ((0.27 + 0.02*_fT)-(17.0 * _L_RULE* 0.00001));
+        }
+       _acc_heave = f_p * _a0 * _grav; 
     }
+        
     void CSR_SHIP::roll_acceleration(){
-        
+        double f_p;
+        double roll_period;
+        double roll_angle;
+        double f_BK;
+
+        if (_analysis_type == analysis_type::strength){
+            f_p = _f_ps;
+        }
+        else if (_analysis_type == analysis_type::fatigue){
+            f_p = _f_fa * (0.23 - (4*_fT*_B* 0.0001));
+        }
+
+        if (_BilgeKeel) f_BK = 1.0;
+        else f_BK = 1.2;
+
+        roll_period =  (2.3*_PI*_Kr)/(sqrtf(_grav * _GM));
+        roll_angle =   9000*(1.25 - 0.025*roll_period)*1.0*f_BK/((_B+75)*_PI); //roll angle using f_p = 1.0
+
+
+        _acc_roll = f_p * roll_angle * (_PI/180) * powf((2*_PI/roll_period),2);
     }
+
     void CSR_SHIP::pitch_acceleration(){
+        double f_p;
+        double pitch_angle;
+        double pitch_period;
         
+        if (_analysis_type == analysis_type::strength){
+            f_p = _f_ps;
+        }
+        else if (_analysis_type == analysis_type::fatigue){
+            f_p = _f_fa * (0.28 - (5 + 4*_fT) * _L_RULE * 0.00001);
+        }
+        pitch_period = sqrtf((2*_PI*(0.6*(1+_fT)*_L_RULE))/_grav);
+        //Pitch angle using f_p = 1.0
+        pitch_angle = (1350*1.0*(powf(_L_RULE, -0.94)))*(1.0 + powf((2.57/(sqrtf(_grav*_L_RULE))), 1.2));
+        _acc_pitch = f_p * ((3.1/sqrtf(_grav * _L_RULE)) + 1.0) * pitch_angle * (_PI/180)* powf((2*_PI/pitch_period),2);
     }
 
     void CSR_SHIP::print(){
@@ -103,4 +158,9 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
         std::cout << "Theta = " << _rollAngle << "\n";
         std::cout << "T_phi = " << _pitchPeriod << "\n";
         std::cout << "Phi = " << _pitchAngle << "\n";
+        std::cout << "acc_surge = " << _acc_surge << "\n";
+        std::cout << "acc_sway = " << _acc_sway << "\n";
+        std::cout << "acc_heave = " << _acc_heave << "\n";
+        std::cout << "acc_roll = " << _acc_roll << "\n";
+        std::cout << "acc_pitch = " << _acc_pitch << "\n";
     }
