@@ -1,0 +1,18 @@
+##SHIP DATA##
+175.15   #L_RULE [m]
+32.2     #B      [m]
+13.3     #T_SC   [m]
+7.09     #T_LC   [m]
+19.1     #D      [m]
+14.45    #SPEED  [knots]
+0.7883   #CB     [-]
+3.864    #GM     [m]
+11.27    #kr     [m]
+yes      #BilgeKeel {yes, no}
+R0       #Restriction {R0, R1, R2, R3, R4, RE}
+extreme  #Load Scenario {extreme, ballast,  accidental, harbour}
+strength #Analysis Type {strength, fatigue}
+tanker   #Vessel Type {tanker, bulk_carrier}
+
+##COORDINATES## in [m] (x,y,z) - comma separated
+62,-9.490,35.100; //m

@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 #include "csrlib.h"
 
 // user input data e.g. from text file
@@ -10,13 +11,17 @@ const double _T_LC = 7.09;     //m
 const double _D = 19.1;        //m
 const double _V = 14.45;       //knots
 const double _CB = 0.7883;     //[-]
-const double _GM = 3.864;      //m
-const double _Kr = 11.27;      //m
+const double _GM = 10.626;      //m
+const double _Kr = 14.49;      //m
 const bool _BilgeKeel = true;  // true, false
 std::string _restriction = "R0";    //R0, R1, R2, R3, R4, RE
 std::string _scenario = "extreme";  // extreme, ballast,  accidental, harbour
-std::string _analysis = "strength"; //strength, fatigue
+std::string _analysis = "fatigue"; //strength, fatigue
 std::string _vessel = "tanker"; //tanker, bulk_carrier
+
+double x = 62; //m
+double y = -9.490; //m
+double z = 35.100; //m
 
 
 //Helper functions for parsing input data from user
@@ -51,17 +56,31 @@ csr::CSR_SHIP::vesel_type parse_vesel_type(std::string s){
     else return csr::CSR_SHIP::vesel_type::bulk_carrier;
 }
 
+
+
 int main()
 {
     // const csr::service_restriction _restriction = csr::service_restriction::R0;
     // const csr::design_load_scenario _load_scenario = csr::design_load_scenario::extreme_sea;
     // const csr::analysis_type _analysis_type = csr::analysis_type::strength;
+    // std::ifstream input_data;
+    // input_data.open("../input_data.txt");
+    // std::string data_line;
+    // if ( input_data.is_open() ) {
+    //     while ( input_data ) { // equivalent to input_data.good()
+    //         std::getline (input_data, data_line);
+    //         std::cout << data_line << '\n';
+    //     }
+    // }
+    // else {
+    //     std::cout << "Couldn't open file\n";
+    // }
 
     std::cout << "*** Common Structural Rules ***\n";
     csr::CSR_SHIP ship( _L_RULE,  _B,  _T_SC, _T_LC,  _D,  _V,  _CB,  _GM,  _Kr, _BilgeKeel,
                   parse_design_load_scenario(_scenario), parse_analysis_type(_analysis), 
                   parse_service_restriction(_restriction), parse_vesel_type(_vessel));
-   ship.print(); 
+   ship.print(x,y,z);
 
   return 0;
 }

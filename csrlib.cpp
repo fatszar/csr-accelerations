@@ -1,4 +1,5 @@
 #include "csrlib.h"
+#include <cmath>
 
 using namespace SHIP::RULES::CSR;
 
@@ -20,7 +21,7 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
     _load_scenario = scenario;
     _vesel_type = vesel;
 
-    _fT =  std::fmin(_T_LC/_T_SC,0.5);
+    _fT =  std::fmax(_T_LC/_T_SC,0.5);
     _a0 =  (1.58-0.47*_CB)*((2.4/sqrtf(_L_RULE))+(34/_L_RULE)-(600/(_L_RULE*_L_RULE)));
     _RotCentre = std::fmin((_D/4)+(_T_LC/2),_D/2);
 
@@ -93,7 +94,7 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
             f_p = _f_ps;
         }
         else if (_analysis_type == analysis_type::fatigue){
-            f_p = _f_fa * (0.24 - (6 + 2*_fT)*(_B* 0.0001));
+            f_p = _f_fa * (0.24 - (6 - 2*_fT)*(_B* 0.0001));
         }
         _acc_sway = 0.3 * f_p * _a0 * _grav;
     }
@@ -119,7 +120,7 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
             f_p = _f_ps;
         }
         else if (_analysis_type == analysis_type::fatigue){
-            f_p = _f_fa * (0.23 - (4*_fT*_B* 0.0001));
+            f_p = _f_fa * (0.23 - (4.0*_fT*_B* 0.0001));
         }
 
         if (_BilgeKeel) f_BK = 1.0;
@@ -129,7 +130,7 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
         roll_angle =   9000*(1.25 - 0.025*roll_period)*1.0*f_BK/((_B+75)*_PI); //roll angle using f_p = 1.0
 
 
-        _acc_roll = f_p * roll_angle * (_PI/180) * powf((2*_PI/roll_period),2);
+        _acc_roll = f_p * roll_angle * (_PI/180) * pow((2*_PI/roll_period),2);
     }
 
     void CSR_SHIP::pitch_acceleration(){
@@ -145,11 +146,30 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
         }
         pitch_period = sqrtf((2*_PI*(0.6*(1+_fT)*_L_RULE))/_grav);
         //Pitch angle using f_p = 1.0
-        pitch_angle = (1350*1.0*(powf(_L_RULE, -0.94)))*(1.0 + powf((2.57/(sqrtf(_grav*_L_RULE))), 1.2));
+        pitch_angle = 1350*1.0*powf(_L_RULE, -0.94)*(1.0 + powf(2.57/(sqrtf(_grav*_L_RULE)),1.2));
         _acc_pitch = f_p * ((3.1/sqrtf(_grav * _L_RULE)) + 1.0) * pitch_angle * (_PI/180)* powf((2*_PI/pitch_period),2);
     }
 
-    void CSR_SHIP::print(){
+    double CSR_SHIP::a_x_env(double z){
+        return 0.7*sqrtf(std::pow(_acc_surge,2) + std::pow((_L_RULE/325)*(_grav*std::sin(_pitchAngle*_PI/180)+(_acc_pitch*(z- _RotCentre))),2));
+    }
+
+    double CSR_SHIP::a_y_env(double z){
+        return sqrtf(std::pow(_acc_sway,2) + std::pow(_grav*std::sin(_rollAngle*_PI/180)+_acc_roll*(z- _RotCentre),2));
+    }
+
+    double CSR_SHIP::a_z_env(double x, double y){
+        return sqrtf(std::pow(_acc_heave, 2) + std::pow((0.3 + (_L_RULE/325))*(_acc_pitch*(x - 0.45 * _L_RULE)), 2) + std::pow(1.2*_acc_roll * y, 2));
+    }
+    bool CSR_SHIP::GetEnvelopeAccelerations(double x, double y, double z, double out_ax_env, double out_ay_env, double out_az_env){
+        out_ax_env = a_x_env(z);
+        out_ax_env = a_y_env(z);
+        out_ax_env = a_z_env(x,y);
+        return true; // TODO: not checking anything but ther is a need to implement at least division by zero check!!!
+    }
+
+
+    void CSR_SHIP::print(double x, double y, double z){
         std::cout <<"Data from  class\n";
         std::cout << "a0 = " << _a0 << "\n";
         std::cout << "R = " << _RotCentre << "\n";
@@ -163,4 +183,8 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
         std::cout << "acc_heave = " << _acc_heave << "\n";
         std::cout << "acc_roll = " << _acc_roll << "\n";
         std::cout << "acc_pitch = " << _acc_pitch << "\n";
+        std::cout << "acc_pitch = " << _acc_pitch << "\n";
+        std::cout << "a_x_env = " << a_x_env(z) << "\n";
+        std::cout << "a_y_env = " << a_y_env(z) << "\n";
+        std::cout << "a_z_env = " << a_z_env(x,y) << "\n";
     }

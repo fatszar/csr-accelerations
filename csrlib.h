@@ -45,7 +45,11 @@ namespace SHIP::RULES::CSR
     //CSR_SHIP &operator=(CSR_SHIP &&) = default;
     //CSR_SHIP &operator=(const CSR_SHIP &) = default;
     ~CSR_SHIP();
-    void print();
+    void print(double x, double y, double z);
+    double a_x_env(double z);
+    double a_y_env(double z);
+    double a_z_env(double x, double y);
+    bool GetEnvelopeAccelerations(double x, double y, double z, double out_ax_env, double out_ay_env, double out_az_env);
 
   private:
     double _L_RULE;
