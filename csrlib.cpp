@@ -1,5 +1,4 @@
 #include "csrlib.h"
-#include <cmath>
 
 using namespace SHIP::RULES::CSR;
 
@@ -166,6 +165,13 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
         out_ax_env = a_y_env(z);
         out_ax_env = a_z_env(x,y);
         return true; // TODO: not checking anything but ther is a need to implement at least division by zero check!!!
+    }
+
+    void CSR_SHIP::LCF_HSM1_strength(double x){
+
+    }
+    void CSR_SHIP::LCF_HSM2_strength(double x){
+    
     }
 
 

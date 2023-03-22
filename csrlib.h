@@ -2,7 +2,7 @@
 #define CSRLIB_H
 
 #include <cmath>
-#include <vector>
+#include <unordered_map>
 #include <iostream>
 
 namespace SHIP::RULES::CSR
@@ -93,6 +93,9 @@ namespace SHIP::RULES::CSR
     void heave_acceleration();
     void roll_acceleration();
     void pitch_acceleration();
+
+    void LCF_HSM1_strength(double x);
+    void LCF_HSM2_strength(double x);
   };
 
 } // namespace ships::rules::csr:accelerations
