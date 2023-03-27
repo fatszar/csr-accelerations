@@ -167,12 +167,24 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
         return true; // TODO: not checking anything but ther is a need to implement at least division by zero check!!!
     }
 
-    void CSR_SHIP::LCF_HSM1_strength(double x){
+    double CSR_SHIP::a_x(double z, EDW edw){
+        double C_XS;
+        double C_XP;
+        double C_XG;
+        if (_analysis_type == analysis_type::strength){
+            switch(edw)
+            {
+                case EDW::HSM_1:
+                    C_XG = 0.6;
+                    C_XS = 0.3-0.2*_fT;
+                    C_XP = -0.7;
 
-    }
-    void CSR_SHIP::LCF_HSM2_strength(double x){
-    
-    }
+            }
+        }
+        else if (_analysis_type == analysis_type::fatigue){
+
+        }
+        else { return 0.0;}
 
 
     void CSR_SHIP::print(double x, double y, double z){

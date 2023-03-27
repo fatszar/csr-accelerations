@@ -10,6 +10,32 @@ namespace SHIP::RULES::CSR
   class CSR_SHIP
   {
   public:
+    enum class EDW
+    {
+        HSM_1,
+        HSM_2,
+        HSA_1,
+        HSA_2,
+        FSM_1,
+        FSM_2,
+        BSR_1P,
+        BSR_2P,
+        BSR_1S,
+        BSR_2S,
+        BSP_1P,
+        BSP_2P,
+        BSP_1S,
+        BSP_2S,
+        OST_1P,
+        OST_2P,
+        OST_1S,
+        OST_2S,
+        OSA_1P,
+        OSA_2P,
+        OSA_1S,
+        OSA_2S
+    };
+
     enum class service_restriction
     {
         R0 = 0,
@@ -17,7 +43,7 @@ namespace SHIP::RULES::CSR
         R2 = 2,
         R3 = 3,
         R4 = 4,
-        RE = 5,
+        RE = 5
     };
 
     enum class analysis_type
@@ -50,6 +76,9 @@ namespace SHIP::RULES::CSR
     double a_y_env(double z);
     double a_z_env(double x, double y);
     bool GetEnvelopeAccelerations(double x, double y, double z, double out_ax_env, double out_ay_env, double out_az_env);
+    double a_x(double z, EDW edw);
+    double a_y(double z);
+    double a_z(double x, double y);
 
   private:
     double _L_RULE;
@@ -93,9 +122,6 @@ namespace SHIP::RULES::CSR
     void heave_acceleration();
     void roll_acceleration();
     void pitch_acceleration();
-
-    void LCF_HSM1_strength(double x);
-    void LCF_HSM2_strength(double x);
   };
 
 } // namespace ships::rules::csr:accelerations
