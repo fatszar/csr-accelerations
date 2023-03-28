@@ -19,6 +19,9 @@ std::string _scenario = "extreme";  // extreme, ballast,  accidental, harbour
 std::string _analysis = "fatigue"; //strength, fatigue
 std::string _vessel = "tanker"; //tanker, bulk_carrier
 
+// double x = 139.290; //m
+// double y = 9.490; //m
+// double z = 35.100; //m
 double x = 62; //m
 double y = -9.490; //m
 double z = 35.100; //m
@@ -60,18 +63,18 @@ csr::CSR_SHIP::vesel_type parse_vesel_type(std::string s){
 
 int main()
 {
-    std::ifstream input_data;
-    input_data.open("../input_data.txt");
-    std::string data_line;
-    if ( input_data.is_open() ) {
-        while ( input_data ) { // equivalent to input_data.good()
-            std::getline (input_data, data_line);
-            std::cout << data_line << '\n';
-        }
-    }
-    else {
-        std::cout << "Couldn't open file\n";
-    }
+    // std::ifstream input_data;
+    // input_data.open("../input_data.txt");
+    // std::string data_line;
+    // if ( input_data.is_open() ) {
+    //     while ( input_data ) { // equivalent to input_data.good()
+    //         std::getline (input_data, data_line);
+    //         std::cout << data_line << '\n';
+    //     }
+    // }
+    // else {
+    //     std::cout << "Couldn't open file\n";
+    // }
 
     std::cout << "*** Common Structural Rules ***\n";
     csr::CSR_SHIP ship( _L_RULE,  _B,  _T_SC, _T_LC,  _D,  _V,  _CB,  _GM,  _Kr, _BilgeKeel,
