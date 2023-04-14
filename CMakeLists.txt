@@ -4,6 +4,8 @@ set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project(csrlib VERSION 1.0)
+set(TARGET csrlib)
 
-add_executable(csrlib main.cpp csrlib.cpp)
+project(${TARGET} VERSION 1.0)
+add_executable(${TARGET} main.cpp csrlib.cpp)
+

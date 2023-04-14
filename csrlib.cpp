@@ -32,7 +32,7 @@ CSR_SHIP::CSR_SHIP(double L_RULE, double B, double T_SC, double T_LC, double D, 
 
     _f_fa = 0.9; 
 
-    roll_motion();  
+    roll_motion();
     pitch_motion();
     surge_acceleration();
     sway_acceleration();
